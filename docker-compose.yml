@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./src/backend
+    container_name: chargegrid-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_API_URL=${OLLAMA_API_URL}
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY}
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - DATABASE_URL=postgresql://user:password@db:5432/chargegrid
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build: ./src/frontend
+    container_name: chargegrid-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    container_name: chargegrid-db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=chargegrid
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

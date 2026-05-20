@@ -1,0 +1,124 @@
+<svg width="800" height="920" viewBox="0 0 800 920" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Fluxograma ChargeGrid AI com Ollama</title>
+  <desc>Fluxo do chatbot: do operador ao Ollama (LLM local) e retorno da resposta</desc>
+
+  <!-- Background -->
+  <rect width="800" height="920" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1a1a2e">ChargeGrid AI — Fluxograma de Funcionamento</text>
+  <text x="400" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">EV Challenge 2026 · FIAP x GoodWe · Tecnologia: Ollama (LLM local)</text>
+
+  <!-- LANE LABELS -->
+  <text x="24" y="105" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,105)">OPERADOR</text>
+  <text x="24" y="215" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,215)">FRONTEND</text>
+  <text x="24" y="390" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,390)">BACKEND</text>
+  <text x="24" y="590" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,590)">OLLAMA (LOCAL)</text>
+  <text x="24" y="720" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,720)">BANCO DE DADOS</text>
+  <text x="24" y="845" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,845)">RESPOSTA</text>
+
+  <!-- LANE BACKGROUNDS -->
+  <rect x="40" y="72" width="740" height="90" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="0.7" stroke-dasharray="5,3"/>
+  <rect x="40" y="172" width="740" height="90" rx="8" fill="#d1fae5" stroke="#6ee7b7" stroke-width="0.7" stroke-dasharray="5,3"/>
+  <rect x="40" y="272" width="740" height="220" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="0.7" stroke-dasharray="5,3"/>
+  <rect x="40" y="502" width="740" height="120" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="0.7" stroke-dasharray="5,3"/>
+  <rect x="40" y="632" width="740" height="100" rx="8" fill="#fef9c3" stroke="#fde047" stroke-width="0.7" stroke-dasharray="5,3"/>
+  <rect x="40" y="742" width="740" height="100" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="0.7" stroke-dasharray="5,3"/>
+
+  <!-- ARROW MARKER -->
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- NODE 1: Operador -->
+  <rect x="270" y="90" width="260" height="54" rx="10" fill="#7c3aed" stroke="#5b21b6" stroke-width="1"/>
+  <text x="400" y="113" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">Operador digita mensagem</text>
+  <text x="400" y="132" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#ddd6fe">Status · Falha · Relatório · Dúvida técnica</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="400" y1="144" x2="400" y2="172" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- NODE 2: Frontend React -->
+  <rect x="270" y="190" width="260" height="54" rx="10" fill="#059669" stroke="#047857" stroke-width="1"/>
+  <text x="400" y="213" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">Interface React</text>
+  <text x="400" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#d1fae5">POST /chat — mensagem + histórico</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="400" y1="244" x2="400" y2="290" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- NODE 3: FastAPI -->
+  <rect x="270" y="290" width="260" height="54" rx="10" fill="#2563eb" stroke="#1d4ed8" stroke-width="1"/>
+  <text x="400" y="313" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">FastAPI — recebe request</text>
+  <text x="400" y="332" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#bfdbfe">Valida entrada · identifica intenção</text>
+
+  <!-- Arrow FastAPI -> PostgreSQL (right) -->
+  <line x1="530" y1="317" x2="590" y2="317" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arr-gray)"/>
+  <text x="560" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#64748b">consulta</text>
+  <!-- PostgreSQL side node -->
+  <rect x="590" y="296" width="170" height="42" rx="8" fill="#d97706" stroke="#b45309" stroke-width="1"/>
+  <text x="675" y="313" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#fff">PostgreSQL</text>
+  <text x="675" y="329" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fef3c7">Logs · sessões · histórico</text>
+  <!-- Arrow PostgreSQL -> LangChain (back) -->
+  <line x1="590" y1="347" x2="530" y2="364" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arr-gray)"/>
+  <text x="557" y="364" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#64748b">dados</text>
+
+  <!-- Arrow FastAPI -> LangChain -->
+  <line x1="400" y1="344" x2="400" y2="372" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- NODE 4: LangChain -->
+  <rect x="270" y="372" width="260" height="60" rx="10" fill="#1e40af" stroke="#1e3a8a" stroke-width="1"/>
+  <text x="400" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">LangChain — monta contexto</text>
+  <text x="400" y="413" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#bfdbfe">System prompt + histórico</text>
+  <text x="400" y="428" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#bfdbfe">+ dados do banco + mensagem atual</text>
+
+  <!-- Arrow LangChain -> Ollama -->
+  <line x1="400" y1="432" x2="400" y2="502" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="420" y="470" font-family="Arial, sans-serif" font-size="10" fill="#475569">prompt completo</text>
+
+  <!-- NODE 5: Ollama -->
+  <rect x="230" y="520" width="340" height="84" rx="10" fill="#ea580c" stroke="#c2410c" stroke-width="1"/>
+  <!-- Ollama badge -->
+  <rect x="348" y="508" width="104" height="20" rx="6" fill="#fff" stroke="#ea580c" stroke-width="1"/>
+  <text x="400" y="522" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ea580c">🦙 RODA LOCALMENTE</text>
+  <text x="400" y="548" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff">Ollama API (local)</text>
+  <text x="400" y="567" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fed7aa">Modelo: LLaMA 3 (8B / 70B)</text>
+  <text x="400" y="584" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fed7aa">Processa prompt · gera resposta contextualizada</text>
+
+  <!-- Arrow Ollama -> salva log -->
+  <line x1="400" y1="604" x2="400" y2="650" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- NODE 6: Salva log -->
+  <rect x="270" y="650" width="260" height="54" rx="10" fill="#ca8a04" stroke="#a16207" stroke-width="1"/>
+  <text x="400" y="673" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">Armazena log da resposta</text>
+  <text x="400" y="692" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fef3c7">Salva no PostgreSQL para memória futura</text>
+
+  <!-- Arrow salva -> exibe -->
+  <line x1="400" y1="704" x2="400" y2="760" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- NODE 7: Resposta ao operador -->
+  <rect x="270" y="760" width="260" height="54" rx="10" fill="#7c3aed" stroke="#5b21b6" stroke-width="1"/>
+  <text x="400" y="783" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">Resposta exibida ao operador</text>
+  <text x="400" y="802" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#ddd6fe">Streaming via React · ação sugerida ao final</text>
+
+  <!-- Loop arrow (left side) -->
+  <path d="M270 787 L130 787 L130 117 L270 117" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#arr-gray)"/>
+  <text x="108" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#94a3b8" transform="rotate(-90,108,460)">nova mensagem do operador</text>
+
+  <!-- LEGEND -->
+  <rect x="55" y="868" width="690" height="42" rx="6" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="0.7"/>
+  <rect x="68" y="882" width="12" height="12" rx="3" fill="#7c3aed"/>
+  <text x="86" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Operador / Resposta</text>
+  <rect x="200" y="882" width="12" height="12" rx="3" fill="#059669"/>
+  <text x="218" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Frontend React</text>
+  <rect x="310" y="882" width="12" height="12" rx="3" fill="#2563eb"/>
+  <text x="328" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Backend / LangChain</text>
+  <rect x="460" y="882" width="12" height="12" rx="3" fill="#ea580c"/>
+  <text x="478" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Ollama (LLM local)</text>
+  <rect x="590" y="882" width="12" height="12" rx="3" fill="#ca8a04"/>
+  <text x="608" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">PostgreSQL</text>
+</svg>
