@@ -1,10 +1,11 @@
 """
 ChargeGrid AI — Backend FastAPI
 """
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from chatbot import build_history, chat
+from src.backend.chatbot import build_history, chat
 
 app = FastAPI(title="ChargeGrid AI API")
 
@@ -15,7 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Histórico de conversa em memória (por sessão simples)
 conversation_history = build_history()
 
 class Message(BaseModel):
@@ -31,16 +31,14 @@ async def chat_endpoint(msg: Message):
 
 @app.post("/reset")
 async def reset_chat():
-    """Reinicia o histórico de conversa."""
     global conversation_history
     conversation_history = build_history()
     return {"status": "histórico resetado"}
 
 @app.get("/health")
 async def health():
-    import os
     return {
         "status": "ok",
-        "model": os.getenv("OLLAMA_MODEL", "llama3"),
-        "api_url": os.getenv("OLLAMA_API_URL", "")
+        "model": os.getenv("GROQ_MODEL", "llama3-8b-8192"),
+        "api_url": os.getenv("GROQ_API_URL", "")
     }
