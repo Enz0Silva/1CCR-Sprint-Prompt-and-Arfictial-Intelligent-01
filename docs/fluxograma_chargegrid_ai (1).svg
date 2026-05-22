@@ -1,19 +1,19 @@
 <svg width="800" height="920" viewBox="0 0 800 920" xmlns="http://www.w3.org/2000/svg" role="img">
-  <title>Fluxograma ChargeGrid AI com Ollama</title>
-  <desc>Fluxo do chatbot: do operador ao Ollama (LLM local) e retorno da resposta</desc>
+  <title>Fluxograma ChargeGrid AI com Groq API</title>
+  <desc>Fluxo do chatbot: do operador à Groq API (LLM cloud) e retorno da resposta</desc>
 
   <!-- Background -->
   <rect width="800" height="920" fill="#f8f9fa"/>
 
   <!-- Title -->
   <text x="400" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1a1a2e">ChargeGrid AI — Fluxograma de Funcionamento</text>
-  <text x="400" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">EV Challenge 2026 · FIAP x GoodWe · Tecnologia: Ollama (LLM local)</text>
+  <text x="400" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">EV Challenge 2026 · FIAP x GoodWe · Tecnologia: Groq API (LLM cloud gratuito)</text>
 
   <!-- LANE LABELS -->
   <text x="24" y="105" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,105)">OPERADOR</text>
   <text x="24" y="215" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,215)">FRONTEND</text>
   <text x="24" y="390" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,390)">BACKEND</text>
-  <text x="24" y="590" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,590)">OLLAMA (LOCAL)</text>
+  <text x="24" y="590" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,590)">GROQ API (CLOUD)</text>
   <text x="24" y="720" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,720)">BANCO DE DADOS</text>
   <text x="24" y="845" font-family="Arial, sans-serif" font-size="10" fill="#888" transform="rotate(-90,24,845)">RESPOSTA</text>
 
@@ -63,33 +63,33 @@
   <rect x="590" y="296" width="170" height="42" rx="8" fill="#d97706" stroke="#b45309" stroke-width="1"/>
   <text x="675" y="313" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#fff">PostgreSQL</text>
   <text x="675" y="329" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fef3c7">Logs · sessões · histórico</text>
-  <!-- Arrow PostgreSQL -> LangChain (back) -->
+  <!-- Arrow PostgreSQL -> monta contexto (back) -->
   <line x1="590" y1="347" x2="530" y2="364" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arr-gray)"/>
   <text x="557" y="364" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#64748b">dados</text>
 
-  <!-- Arrow FastAPI -> LangChain -->
+  <!-- Arrow FastAPI -> monta contexto -->
   <line x1="400" y1="344" x2="400" y2="372" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
 
-  <!-- NODE 4: LangChain -->
+  <!-- NODE 4: Monta contexto -->
   <rect x="270" y="372" width="260" height="60" rx="10" fill="#1e40af" stroke="#1e3a8a" stroke-width="1"/>
-  <text x="400" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">LangChain — monta contexto</text>
+  <text x="400" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">chatbot.py — monta contexto</text>
   <text x="400" y="413" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#bfdbfe">System prompt + histórico</text>
   <text x="400" y="428" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#bfdbfe">+ dados do banco + mensagem atual</text>
 
-  <!-- Arrow LangChain -> Ollama -->
+  <!-- Arrow monta contexto -> Groq -->
   <line x1="400" y1="432" x2="400" y2="502" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
   <text x="420" y="470" font-family="Arial, sans-serif" font-size="10" fill="#475569">prompt completo</text>
 
-  <!-- NODE 5: Ollama -->
+  <!-- NODE 5: Groq API -->
   <rect x="230" y="520" width="340" height="84" rx="10" fill="#ea580c" stroke="#c2410c" stroke-width="1"/>
-  <!-- Ollama badge -->
-  <rect x="348" y="508" width="104" height="20" rx="6" fill="#fff" stroke="#ea580c" stroke-width="1"/>
-  <text x="400" y="522" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ea580c">🦙 RODA LOCALMENTE</text>
-  <text x="400" y="548" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff">Ollama API (local)</text>
-  <text x="400" y="567" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fed7aa">Modelo: LLaMA 3 (8B / 70B)</text>
+  <!-- Groq badge -->
+  <rect x="330" y="508" width="140" height="20" rx="6" fill="#fff" stroke="#ea580c" stroke-width="1"/>
+  <text x="400" y="522" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ea580c">☁ API GRATUITA — CLOUD</text>
+  <text x="400" y="548" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff">Groq API</text>
+  <text x="400" y="567" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fed7aa">Modelo: llama3-70b-8192 · Bearer token</text>
   <text x="400" y="584" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fed7aa">Processa prompt · gera resposta contextualizada</text>
 
-  <!-- Arrow Ollama -> salva log -->
+  <!-- Arrow Groq -> salva log -->
   <line x1="400" y1="604" x2="400" y2="650" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <!-- NODE 6: Salva log -->
@@ -103,7 +103,7 @@
   <!-- NODE 7: Resposta ao operador -->
   <rect x="270" y="760" width="260" height="54" rx="10" fill="#7c3aed" stroke="#5b21b6" stroke-width="1"/>
   <text x="400" y="783" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fff">Resposta exibida ao operador</text>
-  <text x="400" y="802" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#ddd6fe">Streaming via React · ação sugerida ao final</text>
+  <text x="400" y="802" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#ddd6fe">Exibida via React · ação sugerida ao final</text>
 
   <!-- Loop arrow (left side) -->
   <path d="M270 787 L130 787 L130 117 L270 117" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#arr-gray)"/>
@@ -116,9 +116,9 @@
   <rect x="200" y="882" width="12" height="12" rx="3" fill="#059669"/>
   <text x="218" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Frontend React</text>
   <rect x="310" y="882" width="12" height="12" rx="3" fill="#2563eb"/>
-  <text x="328" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Backend / LangChain</text>
+  <text x="328" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Backend / chatbot.py</text>
   <rect x="460" y="882" width="12" height="12" rx="3" fill="#ea580c"/>
-  <text x="478" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Ollama (LLM local)</text>
+  <text x="478" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">Groq API (LLM cloud)</text>
   <rect x="590" y="882" width="12" height="12" rx="3" fill="#ca8a04"/>
   <text x="608" y="893" font-family="Arial, sans-serif" font-size="11" fill="#475569">PostgreSQL</text>
 </svg>

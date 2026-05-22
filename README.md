@@ -64,37 +64,76 @@ um painel inteligente conversacional.
 
 | Tecnologia           | Função                             | Justificativa                                              |
 |----------------------|------------------------------------|------------------------------------------------------------|
-| Ollama (API local)   | Modelo principal de linguagem      | Execução 100% local, sem custo de API, privacidade dos dados operacionais; suporta modelos como LLaMA 3, Mistral, Gemma |
-| LLaMA 3 (8B/70B)     | LLM via Ollama                     | Modelo open-source com ótimo desempenho em português e contexto técnico |
+| Groq API             | Modelo principal de linguagem      | API gratuita de alta velocidade, suporta modelos como LLaMA 3 e Mixtral com baixa latência |
+| LLaMA 3 (70B)        | LLM via Groq                       | Modelo open-source com ótimo desempenho em português e contexto técnico |
 | Python 3.11+         | Backend do chatbot                 | Padrão em IA; amplo ecossistema de libs                    |
 | FastAPI              | API REST para o backend            | Leve, assíncrono, ideal para streaming de respostas        |
-| LangChain            | Orquestração e memória de conversa | Integração nativa com Ollama; facilita injeção de contexto |
 | React + Tailwind CSS | Interface frontend                 | Componentização eficiente para UI operacional              |
 | PostgreSQL           | Banco de dados                     | Confiabilidade e queries complexas para relatórios         |
-| Docker               | Containerização                    | Portabilidade — inclui Ollama + modelo + backend + frontend|
+| Docker               | Containerização                    | Portabilidade — inclui backend + frontend                  |
 
-### Por que Ollama e não uma API paga (OpenAI, Claude, Gemini)?
-O Ollama foi escolhido por permitir execução **100% local** do modelo de linguagem,
-o que é essencial em ambiente industrial: dados operacionais sensíveis (logs de falha,
-faturamento, status de equipamentos) não trafegam para servidores externos. Além disso,
-elimina custo por token e dependência de conectividade com a internet. A API do Ollama
-é compatível com o padrão OpenAI, facilitando a integração com LangChain.
+### Por que Groq e não outras APIs (OpenAI, Claude, Gemini)?
+O Groq foi escolhido por oferecer um **plano gratuito generoso** com altíssima velocidade
+de inferência (LPU — Language Processing Unit), ideal para respostas rápidas em ambiente
+operacional. Além disso, é compatível com o padrão OpenAI, facilitando a integração.
+Os modelos disponíveis (LLaMA 3, Mixtral) são open-source e apresentam excelente
+desempenho em português e contexto técnico.
 
 ---
 
 ## Fluxograma de Funcionamento
 
-Ver arquivo: `docs/fluxograma_chargegrid_ai.svg`
+Ver arquivo: `docs/fluxograma_chargegrid_ai (1).svg`
 
 **Resumo do fluxo:**
 1. Operador digita mensagem no frontend React
 2. Frontend envia POST para o backend FastAPI
 3. FastAPI consulta PostgreSQL (logs, sessões, histórico)
 4. Backend monta o contexto: system prompt + histórico + dados + mensagem
-5. Backend chama a Ollama API cloud via HTTP (Authorization: Bearer API_KEY)
-6. Ollama processa o prompt na nuvem e retorna a resposta
-7. Resposta é enviada via streaming ao frontend
+5. Backend chama a Groq API via HTTP (Authorization: Bearer API_KEY)
+6. Groq processa o prompt na nuvem e retorna a resposta
+7. Resposta é enviada ao frontend
 8. Log da interação é salvo no PostgreSQL
+
+---
+
+## Configuração do Ambiente
+
+### Variáveis de Ambiente (`.env`)
+
+```env
+# Groq API
+GROQ_API_KEY=sua-chave-aqui
+GROQ_API_URL=https://api.groq.com/openai/v1/chat/completions
+GROQ_MODEL=llama3-70b-8192
+
+# PostgreSQL
+DATABASE_URL=postgresql://user:password@localhost:5432/chargegrid
+
+# Backend
+API_PORT=8000
+```
+
+### Como obter a chave Groq
+1. Acesse https://console.groq.com
+2. Crie uma conta gratuita
+3. Gere uma API Key em "API Keys"
+4. Cole no `.env`
+
+### Como rodar
+
+```bash
+# Instalar dependências
+pip install -r src/backend/requirements.txt
+
+# Rodar o backend
+uvicorn src.backend.main:app --reload
+
+# Testar
+curl -X POST http://127.0.0.1:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Qual o status dos carregadores?"}'
+```
 
 ---
 
@@ -115,6 +154,7 @@ Ver arquivo: `docs/modelo_de_teste.md`
 ```
 chargegrid-ai/
 ├── README.md
+├── .env
 ├── docs/
 │   ├── fluxograma_chargegrid_ai.svg
 │   └── modelo_de_teste.md
@@ -122,7 +162,7 @@ chargegrid-ai/
 │   ├── backend/
 │   │   ├── main.py
 │   │   ├── chatbot.py
-│   │   └── database.py
+│   │   └── requirements.txt
 │   └── frontend/
 │       ├── App.jsx
 │       └── components/
