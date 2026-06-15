@@ -1,55 +1,19 @@
-ENTREGÁVEL — SPRINT 1
-EV CHALLENGE 2026 | FIAP x GOODWE
-PROJETO: ChargeGrid AI — Chatbot Inteligente para Eletropostos
+EV Challenge 2026 — FIAP x GoodWe
+Sprint 2 — Desenvolvimento e Entrega do Chatbot GoodWe
+Turma: 1CCR | Semestre: 2026.1
 
 ========================================
 INTEGRANTES
 ========================================
-| Enzo    | RM571333 |
-| Eric    | RM570237 |
-| Murilo  | RM573621 |
-| Matheus | RM574085 |
-| João    | RM572697 |
-| Ryan    | RM572993 |
+Enzo Ricardo Silva           — RM571333
+Eric Hernandes Penhalbell    — RM570237
+Murilo Ignacio               — RM573621
+Matheus Borges               — RM574085
+Joao Guilherme Figueiredo    — RM572697
+Ryan Luther                  — RM572993
 
 ========================================
-LINK DO REPOSITÓRIO GITHUB
+LINKS
 ========================================
-https://github.com/Enz0Silva/1CCR-Sprint-Prompt-and-Arfictial-Intelligent-01.git
-
-========================================
-CONTEÚDO DO REPOSITÓRIO
-========================================
-O repositório contém:
-
-1. README.md
-   - Nome do projeto, integrantes e RMs
-   - Problema abordado (ChargeGrid Intelligence)
-   - Proposta do chatbot e persona atendida
-   - Tecnologias selecionadas e justificativa técnica
-
-2. docs/fluxograma_chargegrid_ai.svg
-   - Fluxograma completo do funcionamento do chatbot com Ollama
-   - Inclui: entrada do operador, frontend React, backend FastAPI,
-     orquestração LangChain, Ollama (LLM local), PostgreSQL e saída
-
-3. docs/modelo_de_teste.md
-   - 5 perguntas esperadas com respostas ideais e critérios de avaliação
-
-4. prompts/system_prompt.txt
-   - System prompt completo que condiciona o modelo ao contexto GoodWe
-
-========================================
-RESUMO TÉCNICO
-========================================
-Contexto escolhido: ChargeGrid Intelligence (operador comercial/técnico)
-Persona: Operador técnico de eletropostos GoodWe
-LLM: Ollama (execução local) com modelo LLaMA 3 (8B ou 70B)
-Tecnologias: Python, FastAPI, LangChain, React, PostgreSQL, Docker
-
-========================================
-OBSERVAÇÕES
-========================================
-- O fluxograma está no repositório em formato SVG (editável)
-- O Ollama roda localmente — dados operacionais não saem da rede interna
-- O system prompt elaborado nesta Sprint será base do desenvolvimento na Sprint 2 de Prompt and Ardictial Intelligent
+Repositorio GitHub : https://github.com/Enz0Silva/1CCR-Sprint-Prompt-and-Arfictial-Intelligent-01.git
+Video YouTube      : https://youtu.be/Qt0Y7GEMrPI
