@@ -7,42 +7,49 @@
 
 ## Integrantes
 
-| Nome    | RM       |
-|---------|----------|
-| Enzo    | RM571333 |
-| Eric    | RM570237 |
-| Murilo  | RM573621 |
-| Matheus | RM574085 |
-| João    | RM572697 |
-| Ryan    | RM572993 |
+| Nome Completo               | RM       |
+|-----------------------------|----------|
+| Enzo Ricardo Silva          | RM571333 |
+| Eric Hernandes Penhalbell   | RM570237 |
+| Murilo Ignacio              | RM573621 |
+| Matheus Borges              | RM574085 |
+| João Guilherme Figueiredo   | RM572697 |
+| Ryan Luther                 | RM572993 |
 
 ---
 
 ## Problema Abordado
 
-Os eletropostos comerciais atualmente carecem de mecanismos integrados para:
+Os eletropostos comerciais equipados com hardware GoodWe enfrentam lacunas críticas
+na gestão operacional:
 
-- Orquestrar potência entre múltiplos carregadores simultâneos
-- Registrar ciclos de carga de forma auditável e histórica
-- Faturar automaticamente sessões por usuário, veículo ou contrato
-- Comunicar status em tempo real para operadores e técnicos
+- **Billing e registro de ciclos**: ausência de mecanismo integrado para faturar
+  automaticamente sessões por usuário, veículo ou contrato e auditar o histórico
+  de ciclos de carga de forma confiável
+- **Orquestração de potência**: sem controle centralizado para redistribuir carga
+  entre múltiplos carregadores simultâneos, causando sobrecarga ou subutilização
+- **Acesso operacional em campo**: operadores técnicos não possuem canal conversacional
+  para consultar status, diagnosticar falhas e agir sobre dados em tempo real
+- **Comunicação de status**: ausência de alertas proativos e relatórios consolidados
+  para tomada de decisão rápida
 
 Esse conjunto de lacunas — chamado de **ChargeGrid Intelligence** pela GoodWe — resulta
-em ineficiência operacional, perda de receita e dificuldade de manutenção. Não existe
-hoje um canal conversacional que permita ao operador consultar, diagnosticar e agir
-sobre esses dados de forma natural e imediata.
+em ineficiência operacional, perda de receita e dificuldade de manutenção preventiva.
 
 ---
 
 ## Proposta do Chatbot
 
-O **ChargeGrid AI** é um chatbot operacional com IA generativa voltado para **operadores
-comerciais e técnicos de eletropostos** equipados com hardware GoodWe.
+O **ChargeGrid AI** é um chatbot operacional com IA generativa voltado para operadores
+comerciais e técnicos de eletropostos equipados com hardware GoodWe.
 
 ### Persona Principal
-**Operador Comercial / Técnico de Campo** — pessoa responsável por monitorar o
-funcionamento dos carregadores, responder a falhas, gerar relatórios e tomar
-decisões sobre distribuição de carga.
+**Operador Comercial / Técnico de Campo** — profissional responsável por monitorar
+o funcionamento dos carregadores, responder a falhas, gerar relatórios e tomar
+decisões sobre distribuição de carga. Suas dores específicas:
+- Precisa de dados consolidados sem acessar múltiplos sistemas
+- Toma decisões críticas em campo com informação incompleta
+- Não tem canal direto para diagnóstico técnico rápido de equipamentos GoodWe
 
 ### O que o chatbot responde
 - Status em tempo real dos eletropostos (disponível, ocupado, em falha)
@@ -52,128 +59,144 @@ decisões sobre distribuição de carga.
 - Diagnóstico de falhas e orientações de manutenção
 - Dúvidas técnicas sobre equipamentos GoodWe e protocolos OCPP
 
-### Justificativa da Escolha do Contexto
-O contexto **comercial/técnico** foi escolhido por apresentar maior complexidade
-operacional e maior impacto no negócio. Operadores tomam decisões críticas em campo
-sem acesso fácil a dados consolidados — o chatbot resolve esse gap funcionando como
-um painel inteligente conversacional.
-
 ---
 
-## Tecnologias Selecionadas
+## Tecnologias
 
-| Tecnologia           | Função                             | Justificativa                                              |
-|----------------------|------------------------------------|------------------------------------------------------------|
-| Groq API             | Modelo principal de linguagem      | API gratuita de alta velocidade, suporta modelos como LLaMA 3 e Mixtral com baixa latência |
-| LLaMA 3 (70B)        | LLM via Groq                       | Modelo open-source com ótimo desempenho em português e contexto técnico |
-| Python 3.11+         | Backend do chatbot                 | Padrão em IA; amplo ecossistema de libs                    |
-| FastAPI              | API REST para o backend            | Leve, assíncrono, ideal para streaming de respostas        |
-| React + Tailwind CSS | Interface frontend                 | Componentização eficiente para UI operacional              |
-| PostgreSQL           | Banco de dados                     | Confiabilidade e queries complexas para relatórios         |
-| Docker               | Containerização                    | Portabilidade — inclui backend + frontend                  |
+| Tecnologia      | Função                        | Prós                                              | Contras                                      |
+|-----------------|-------------------------------|---------------------------------------------------|----------------------------------------------|
+| Ollama Cloud    | Motor de LLM gerenciado       | Gratuito para uso, sem hardware local, baixa latência | Requer API Key, dependência de conexão       |
+| gpt-oss:120b    | Modelo de linguagem principal | Open-source 120B, ótimo em PT-BR, contexto amplo  | Modelo grande, latência maior que 8B         |
+| Python 3.11+    | Backend do chatbot            | Ecossistema amplo, padrão em IA                   | Performance inferior a Go/Rust               |
+| ollama (lib)    | Cliente Python para Ollama    | API simples, suporta streaming e chat history     | Documentação ainda em evolução               |
+| python-dotenv   | Gerenciamento de variáveis    | Seguro, padrão de mercado                         | Apenas para ambiente local                   |
 
-### Por que Groq e não outras APIs (OpenAI, Claude, Gemini)?
-O Groq foi escolhido por oferecer um **plano gratuito generoso** com altíssima velocidade
-de inferência (LPU — Language Processing Unit), ideal para respostas rápidas em ambiente
-operacional. Além disso, é compatível com o padrão OpenAI, facilitando a integração.
-Os modelos disponíveis (LLaMA 3, Mixtral) são open-source e apresentam excelente
-desempenho em português e contexto técnico.
+### Por que Ollama Cloud e não outras opções?
 
----
+| Critério               | Ollama Cloud    | Groq API        | OpenAI GPT-4    | Gemini          |
+|------------------------|-----------------|-----------------|-----------------|-----------------|
+| Custo                  | Gratuito        | Gratuito (limite) | Pago          | Gratuito (limite) |
+| Qualidade PT-BR        | Excelente       | Boa             | Excelente       | Boa             |
+| Janela de contexto     | 128k tokens     | 8k tokens       | 128k tokens    | 1M tokens       |
+| Modelos open-source    | Sim             | Sim             | Não             | Não             |
+| Privacidade dos dados  | Alta            | Média           | Baixa           | Baixa           |
+| Latência               | Média           | Muito baixa     | Média           | Média           |
 
-## Fluxograma de Funcionamento
-
-Ver arquivo: `docs/fluxograma_chargegrid_ai (1).svg`
-
-**Resumo do fluxo:**
-1. Operador digita mensagem no frontend React
-2. Frontend envia POST para o backend FastAPI
-3. FastAPI consulta PostgreSQL (logs, sessões, histórico)
-4. Backend monta o contexto: system prompt + histórico + dados + mensagem
-5. Backend chama a Groq API via HTTP (Authorization: Bearer API_KEY)
-6. Groq processa o prompt na nuvem e retorna a resposta
-7. Resposta é enviada ao frontend
-8. Log da interação é salvo no PostgreSQL
-
----
-
-## Configuração do Ambiente
-
-### Variáveis de Ambiente (`.env`)
-
-```env
-# Groq API
-GROQ_API_KEY=sua-chave-aqui
-GROQ_API_URL=https://api.groq.com/openai/v1/chat/completions
-GROQ_MODEL=llama3-70b-8192
-
-# PostgreSQL
-DATABASE_URL=postgresql://user:password@localhost:5432/chargegrid
-
-# Backend
-API_PORT=8000
-```
-
-### Como obter a chave Groq
-1. Acesse https://console.groq.com
-2. Crie uma conta gratuita
-3. Gere uma API Key em "API Keys"
-4. Cole no `.env`
-
-### Como rodar
-
-```bash
-# Instalar dependências
-pip install -r src/backend/requirements.txt
-
-# Rodar o backend
-uvicorn src.backend.main:app --reload
-
-# Testar
-curl -X POST http://127.0.0.1:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"text":"Qual o status dos carregadores?"}'
-```
-
----
-
-## System Prompt (Contexto-Base)
-
-Ver arquivo: `prompts/system_prompt.txt`
-
----
-
-## Modelo de Teste
-
-Ver arquivo: `docs/modelo_de_teste.md`
+Ollama Cloud foi escolhido por oferecer acesso gratuito ao modelo `gpt-oss:120b`
+(open-source de 120 bilhões de parâmetros), excelente qualidade em português e
+janela de contexto ampla — essencial para manter memória conversacional rica.
 
 ---
 
 ## Estrutura do Repositório
 
-```
+\`\`\`
 chargegrid-ai/
 ├── README.md
-├── .env
+├── .env.example
+├── .gitignore
 ├── docs/
 │   ├── fluxograma_chargegrid_ai.svg
-│   └── modelo_de_teste.md
-├── src/
-│   ├── backend/
-│   │   ├── main.py
-│   │   ├── chatbot.py
-│   │   └── requirements.txt
-│   └── frontend/
-│       ├── App.jsx
-│       └── components/
-│           └── ChatWindow.jsx
+│   ├── modelo_de_teste.md
+│   └── resultados_testes.md       ← NOVO Sprint 2
 ├── prompts/
 │   └── system_prompt.txt
-├── docker-compose.yml
-└── .env.example
-```
+├── src/
+│   └── backend/
+│       ├── chatbot.py
+│       ├── main.py
+│       └── requirements.txt
+└── entrega_sprint.txt
+\`\`\`
 
 ---
 
-*Projeto desenvolvido no contexto do EV Challenge 2026 — FIAP x GoodWe*
-*Sprint 1 — Exploração e Planejamento*
+## Pré-requisitos
+
+1. **Python 3.11+** instalado
+2. **API Key do Ollama Cloud** — obtenha em https://ollama.com
+
+---
+
+## Configuração do Ambiente
+
+### 1. Clonar o repositório
+\`\`\`bash
+git clone https://github.com/Enz0Silva/1CCR-Sprint-Prompt-and-Arfictial-Intelligent-01.git
+cd 1CCR-Sprint-Prompt-and-Arfictial-Intelligent-01
+\`\`\`
+
+### 2. Criar o arquivo .env
+\`\`\`bash
+cp .env.example .env
+\`\`\`
+
+Conteúdo do `.env`:
+\`\`\`
+OLLAMA_API_KEY=sua_chave_aqui
+OLLAMA_MODEL=gpt-oss:120b
+\`\`\`
+
+O arquivo `.env` está no `.gitignore` e nunca deve ser commitado.
+
+### 3. Criar ambiente virtual e instalar dependências
+\`\`\`bash
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install ollama python-dotenv
+\`\`\`
+
+---
+
+## Como Rodar no PyCharm
+
+1. **Edit Configurations** → selecione o interpretador do `.venv`
+2. No campo **"Paths to .env files"**, aponte para o `.env` na raiz
+3. Abra `src/backend/main.py` e pressione **Shift+F10**
+
+Pelo terminal:
+\`\`\`bash
+cd src/backend
+python main.py
+\`\`\`
+
+---
+
+## Comandos do CLI
+
+| Comando   | Função                              |
+|-----------|-------------------------------------|
+| `/reset`  | Limpa o histórico de conversa       |
+| `/status` | Exibe modelo e URL do Ollama        |
+| `/ajuda`  | Lista os comandos disponíveis       |
+| `/sair`   | Encerra o chatbot                   |
+
+---
+
+## Memória de Contexto
+
+O chatbot mantém histórico completo da conversa em memória durante a sessão.
+Cada mensagem enviada ao Ollama inclui todas as trocas anteriores, permitindo
+diálogos contínuos e coerentes sem necessidade de repetir contexto.
+
+O histórico é resetado ao digitar `/reset` ou reiniciar o programa.
+
+---
+
+## Modelo de Teste e Resultados
+
+- Modelo de teste: `docs/modelo_de_teste.md` (7 casos, incluindo fora do escopo e jailbreak)
+- Resultados documentados: `docs/resultados_testes.md`
+
+**Resumo: 6 de 7 casos com avaliação Adequada.**
+
+---
+
+## Segurança
+
+- API Key carregada via variável de ambiente, nunca exposta no código
+- `.env` no `.gitignore` — nunca commitado no repositório
+- Modelo segue restrições rígidas: não inventa dados, recusa jailbreak, redireciona fora do escopo
+
+---
+
+*EV Challenge 2026 — FIAP x GoodWe | Sprint 2 — Desenvolvimento e Entrega*
