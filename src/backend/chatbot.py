@@ -1,46 +1,52 @@
 """
-ChargeGrid AI — Chatbot com Groq API (gratuita)
+ChargeGrid AI — Chatbot via Ollama Cloud
+GoodWe EV Challenge 2026 | FIAP 1CCR Sprint 2
 """
 import os
-import requests
 from dotenv import load_dotenv
+from ollama import Client
 
 load_dotenv()
 
-GROQ_API_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/openai/v1/chat/completions")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")  # lê do .env
-GROQ_MODEL   = os.getenv("GROQ_MODEL", "llama3-8b-8192")
+OLLAMA_API_KEY = os.environ.get("OLLAMA_API_KEY", "")
+OLLAMA_MODEL   = os.environ.get("OLLAMA_MODEL", "gpt-oss:120b")
+OLLAMA_URL     = "https://ollama.com"
+
+client = Client(
+    host="https://ollama.com",
+    headers={"Authorization": "Bearer " + OLLAMA_API_KEY}
+)
+
+print("API KEY carregada:", "OK" if OLLAMA_API_KEY else "FALTANDO — adicione OLLAMA_API_KEY no .env")
 
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
 PROMPT_PATH = os.path.join(BASE_DIR, "..", "..", "prompts", "system_prompt.txt")
 
 with open(PROMPT_PATH, "r", encoding="utf-8") as f:
-    SYSTEM_PROMPT = f.read()
+    SYSTEM_PROMPT = f.read().strip()
+
 
 def build_history() -> list:
-    """Retorna histórico inicial com o system prompt."""
     return [{"role": "system", "content": SYSTEM_PROMPT}]
+
 
 def chat(history: list, user_message: str) -> str:
     history.append({"role": "user", "content": user_message})
 
-    response = requests.post(
-        GROQ_API_URL,
-        headers={
-            "Authorization": f"Bearer {GROQ_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": GROQ_MODEL,
-            "messages": history,
-            "temperature": 0.3
-        },
-        timeout=60
-    )
+    try:
+        resposta = client.chat(
+            model=OLLAMA_MODEL,
+            messages=history,
+            options={"num_predict": 1024, "temperature": 0.3},
+            stream=False,
+        )
+        reply = resposta["message"]["content"].strip()
+    except Exception as e:
+        raise RuntimeError(f"Erro ao consultar Ollama Cloud: {e}")
 
-    if not response.ok:
-        print("Erro Groq:", response.status_code, response.text)
-        response.raise_for_status()
-    reply = response.json()["choices"][0]["message"]["content"]
     history.append({"role": "assistant", "content": reply})
     return reply
+
+
+def reset_history() -> list:
+    return build_history()
