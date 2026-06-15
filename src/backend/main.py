@@ -1,44 +1,82 @@
 """
-ChargeGrid AI — Backend FastAPI
+ChargeGrid AI — CLI Interativo
+GoodWe EV Challenge 2026 | FIAP 1CCR Sprint 2
 """
-import os
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from src.backend.chatbot import build_history, chat
+import sys
+from chatbot import build_history, chat, reset_history, OLLAMA_MODEL, OLLAMA_URL
 
-app = FastAPI(title="ChargeGrid AI API")
+BANNER = r"""
+  ____  _                   _  ____      _     _      _    ___ 
+ / ___|| |__   __ _ _ __ __| |/ ___|_ __(_) __| |    / \  |_ _|
+| |    | '_ \ / _` | '__/ _` | |  _| '__| |/ _` |   / _ \  | | 
+| |___ | | | | (_| | | | (_| | |_| | |  | | (_| |  / ___ \ | | 
+ \____||_| |_|\__,_|_|  \__,_|\____|_|  |_|\__,_| /_/   \_\___|
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+  GoodWe EV Challenge 2026 | FIAP 1CCR | Sprint 2
+  Assistente operacional de eletropostos comerciais
+"""
 
-conversation_history = build_history()
+SEPARATOR = "─" * 60
 
-class Message(BaseModel):
-    text: str
+HELP_TEXT = """
+Comandos especiais:
+  /reset    — Limpa o historico de conversa
+  /status   — Mostra modelo e URL do Ollama
+  /ajuda    — Exibe esta mensagem
+  /sair     — Encerra o chatbot
+"""
 
-@app.post("/chat")
-async def chat_endpoint(msg: Message):
-    try:
-        response = chat(conversation_history, msg.text)
-        return {"response": response}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/reset")
-async def reset_chat():
-    global conversation_history
-    conversation_history = build_history()
-    return {"status": "histórico resetado"}
+def print_status():
+    print(f"\n  Modelo : {OLLAMA_MODEL}")
+    print(f"  Ollama : {OLLAMA_URL}")
+    print(f"  Memoria: historico ativo\n")
 
-@app.get("/health")
-async def health():
-    return {
-        "status": "ok",
-        "model": os.getenv("GROQ_MODEL", "llama3-8b-8192"),
-        "api_url": os.getenv("GROQ_API_URL", "")
-    }
+
+def run():
+    print(BANNER)
+    print(SEPARATOR)
+    print_status()
+    print("  Digite sua mensagem ou /ajuda para ver os comandos.")
+    print(SEPARATOR)
+
+    history = build_history()
+
+    while True:
+        try:
+            user_input = input("\nOperador > ").strip()
+        except (KeyboardInterrupt, EOFError):
+            print("\n\nEncerrando ChargeGrid AI. Ate logo.")
+            sys.exit(0)
+
+        if not user_input:
+            continue
+
+        if user_input.lower() == "/sair":
+            print("\nEncerrando ChargeGrid AI. Ate logo.")
+            sys.exit(0)
+
+        elif user_input.lower() == "/reset":
+            history = reset_history()
+            print("\n  [Historico resetado. Nova conversa iniciada.]\n")
+            continue
+
+        elif user_input.lower() == "/status":
+            print_status()
+            continue
+
+        elif user_input.lower() == "/ajuda":
+            print(HELP_TEXT)
+            continue
+
+        print("\nChargeGrid AI > ", end="", flush=True)
+        try:
+            response = chat(history, user_input)
+            print(response)
+            print()
+        except Exception as e:
+            print(f"\n  [ERRO] {e}\n")
+
+
+if __name__ == "__main__":
+    run()
