@@ -1,0 +1,30 @@
+# ChargeGrid AI — Sprint 03
+# Instalar a partir da RAIZ do projeto:
+#   python -m venv .venv
+#   .venv\Scripts\python.exe -m pip install -r requirements.txt     (Windows)
+#   source .venv/bin/activate && pip install -r requirements.txt    (Linux/Mac)
+
+# --- Nucleo LangChain (Aulas 01-04) ---
+langchain-core>=0.3.0
+langchain-ollama>=0.2.0
+langchain-classic>=0.1.0      # ConversationTokenBufferMemory (paridade com a Aula 02)
+
+# --- Structured output (Aula 03) ---
+pydantic>=2.0.0
+
+# --- Context engineering (Aula 04) ---
+tiktoken>=0.7.0               # medicao de tokens; ha fallback se faltar
+
+# --- Cliente Ollama direto (usado so pela versao legado no comparativo) ---
+ollama>=0.4.0
+
+# --- Ambiente ---
+python-dotenv>=1.0.1
+
+# --- Relatorio em PDF (docs/gerar_relatorio_pdf.py) ---
+reportlab>=4.0.0
+pypdf>=4.0.0                  # so para contar paginas e avisar se passar de 5
+
+# --- Bonus multi-provider: descomente se for usar outro provider ---
+# langchain-openai>=0.2.0
+# langchain-anthropic>=0.3.0

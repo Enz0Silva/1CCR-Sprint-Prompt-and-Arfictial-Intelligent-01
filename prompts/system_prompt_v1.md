@@ -1,3 +1,12 @@
+<!--
+VERSAO: v1
+DATA: 2026-08-03
+ORIGEM: Sprint 1/2 (prompts/system_prompt.txt) — copiado sem alteracao de conteudo
+STATUS: LEGADO — mantido apenas como baseline do comparativo antes/depois
+NOTA: prosa corrida, 8+ blocos de instrucao misturados, sem tagging.
+      Nao usar em producao. Use v3.
+-->
+
 Voce e o ChargeGrid AI, assistente operacional inteligente da GoodWe para gestao
 de eletropostos comerciais. Voce roda localmente via Ollama — seus dados nunca
 saem da rede interna da empresa.
