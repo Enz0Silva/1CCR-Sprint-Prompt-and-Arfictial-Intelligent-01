@@ -1,202 +1,209 @@
 # ChargeGrid AI — Chatbot Inteligente para Eletropostos GoodWe
 
-> Projeto desenvolvido para o **EV Challenge 2026** — FIAP x GoodWe
-> Contexto: **ChargeGrid Intelligence** (operador comercial / técnico)
+> **EV Challenge 2026 — FIAP x GoodWe · Sprint 03**
+> Nucleo conversacional refatorado em **LangChain LCEL**, com memoria por sessao,
+> saida estruturada validada e guardrails em duas camadas.
 
 ---
 
 ## Integrantes
 
-| Nome Completo               | RM       |
-|-----------------------------|----------|
-| Enzo Ricardo Silva          | RM571333 |
-| Eric Hernandes Penhalbell   | RM570237 |
-| Murilo Ignacio              | RM573621 |
-| Matheus Borges              | RM574085 |
-| João Guilherme Figueiredo   | RM572697 |
-| Ryan Luther                 | RM572993 |
+| Nome Completo | RM |
+|---------------|-----|
+| Enzo Ricardo Silva | RM571333 |
+| Eric Hernandes Penhalbell | RM570237 |
+| Matheus Borges | RM574085 |
+| Joao Guilherme Figueiredo | RM572697 |
+| Ryan Luther | RM572993 |
 
 ---
 
-## Problema Abordado
+## O que mudou nesta sprint
 
-Os eletropostos comerciais equipados com hardware GoodWe enfrentam lacunas críticas
-na gestão operacional:
+As Sprints 1 e 2 entregaram um CLI que falava direto com o Ollama Cloud: o
+historico era uma lista Python que so crescia, a saida era sempre texto livre e
+toda a defesa contra jailbreak vivia num unico bloco de prosa do system prompt.
 
-- **Billing e registro de ciclos**: ausência de mecanismo integrado para faturar
-  automaticamente sessões por usuário, veículo ou contrato e auditar o histórico
-  de ciclos de carga de forma confiável
-- **Orquestração de potência**: sem controle centralizado para redistribuir carga
-  entre múltiplos carregadores simultâneos, causando sobrecarga ou subutilização
-- **Acesso operacional em campo**: operadores técnicos não possuem canal conversacional
-  para consultar status, diagnosticar falhas e agir sobre dados em tempo real
-- **Comunicação de status**: ausência de alertas proativos e relatórios consolidados
-  para tomada de decisão rápida
+A Sprint 03 reconstruiu esse nucleo:
 
-Esse conjunto de lacunas — chamado de **ChargeGrid Intelligence** pela GoodWe — resulta
-em ineficiência operacional, perda de receita e dificuldade de manutenção preventiva.
+| | Sprints 1/2 | Sprint 03 |
+|---|---|---|
+| Nucleo | `client.chat()` + lista de dicts | chain LCEL `prompt \| llm \| parser` |
+| Memoria | lista global, sem teto | `RunnableWithMessageHistory` + janela de 800 tokens |
+| Sessoes | uma so, global ao processo | N sessoes isoladas por `session_id` |
+| Saida | string | string **ou** `ConsultaRecarga` validado (Pydantic v2) |
+| System prompt | 1 `.txt` sem versao | v1/v2/v3 versionados, com ganho medido |
+| Guardrails | so no texto do prompt | prompt **+** 2 camadas em codigo |
+| Eval | 7 casos, avaliacao a olho | 19 casos com score automatico |
 
----
-
-## Proposta do Chatbot
-
-O **ChargeGrid AI** é um chatbot operacional com IA generativa voltado para operadores
-comerciais e técnicos de eletropostos equipados com hardware GoodWe.
-
-### Persona Principal
-**Operador Comercial / Técnico de Campo** — profissional responsável por monitorar
-o funcionamento dos carregadores, responder a falhas, gerar relatórios e tomar
-decisões sobre distribuição de carga. Suas dores específicas:
-- Precisa de dados consolidados sem acessar múltiplos sistemas
-- Toma decisões críticas em campo com informação incompleta
-- Não tem canal direto para diagnóstico técnico rápido de equipamentos GoodWe
-
-### O que o chatbot responde
-- Status em tempo real dos eletropostos (disponível, ocupado, em falha)
-- Histórico de sessões de carga por carregador ou período
-- Alertas de sobrecarga e sugestões de redistribuição de potência
-- Relatórios de faturamento e consumo energético
-- Diagnóstico de falhas e orientações de manutenção
-- Dúvidas técnicas sobre equipamentos GoodWe e protocolos OCPP
+O escopo de produto e o mesmo: mesma persona, mesmo dominio. Esta sprint foi de
+fundacao, nao de feature.
 
 ---
 
-## Tecnologias
+## Mapeamento Modulo 1 -> codigo
 
-| Tecnologia      | Função                        | Prós                                              | Contras                                      |
-|-----------------|-------------------------------|---------------------------------------------------|----------------------------------------------|
-| Ollama Cloud    | Motor de LLM gerenciado       | Gratuito para uso, sem hardware local, baixa latência | Requer API Key, dependência de conexão       |
-| gpt-oss:120b    | Modelo de linguagem principal | Open-source 120B, ótimo em PT-BR, contexto amplo  | Modelo grande, latência maior que 8B         |
-| Python 3.11+    | Backend do chatbot            | Ecossistema amplo, padrão em IA                   | Performance inferior a Go/Rust               |
-| ollama (lib)    | Cliente Python para Ollama    | API simples, suporta streaming e chat history     | Documentação ainda em evolução               |
-| python-dotenv   | Gerenciamento de variáveis    | Seguro, padrão de mercado                         | Apenas para ambiente local                   |
-
-### Por que Ollama Cloud e não outras opções?
-
-| Critério               | Ollama Cloud    | Groq API        | OpenAI GPT-4    | Gemini          |
-|------------------------|-----------------|-----------------|-----------------|-----------------|
-| Custo                  | Gratuito        | Gratuito (limite) | Pago          | Gratuito (limite) |
-| Qualidade PT-BR        | Excelente       | Boa             | Excelente       | Boa             |
-| Janela de contexto     | 128k tokens     | 8k tokens       | 128k tokens    | 1M tokens       |
-| Modelos open-source    | Sim             | Sim             | Não             | Não             |
-| Privacidade dos dados  | Alta            | Média           | Baixa           | Baixa           |
-| Latência               | Média           | Muito baixa     | Média           | Média           |
-
-Ollama Cloud foi escolhido por oferecer acesso gratuito ao modelo `gpt-oss:120b`
-(open-source de 120 bilhões de parâmetros), excelente qualidade em português e
-janela de contexto ampla — essencial para manter memória conversacional rica.
+| Aula | Conteudo | Onde esta |
+|------|----------|-----------|
+| 01 | LCEL, ChatOllama, Output Parsers | `src/chain/builder.py` |
+| 02 | Memoria conversacional com limite de tokens | `src/chain/memoria.py` |
+| 03 | Structured output com Pydantic v2 | `src/schemas/ev.py` |
+| 04 | Context engineering, XML tagging, tiktoken | `prompts/`, `evals/medir_prompts.py` |
+| — | Seguranca e guardrails | `src/guardrails/` |
 
 ---
 
-## Estrutura do Repositório
+## Estrutura
 
-\`\`\`
+```
 chargegrid-ai/
-├── README.md
-├── .env.example
-├── .gitignore
-├── docs/
-│   ├── fluxograma_chargegrid_ai.svg
-│   ├── modelo_de_teste.md
-│   └── resultados_testes.md       ← NOVO Sprint 2
 ├── prompts/
-│   └── system_prompt.txt
+│   ├── system_prompt_v1.md      # baseline legado (Sprints 1/2)
+│   ├── system_prompt_v2.md      # XML tagging
+│   ├── system_prompt_v3.md      # producao
+│   └── VERSOES.md               # tabela de versoes com ganho medido
 ├── src/
-│   └── backend/
-│       ├── chatbot.py
-│       ├── main.py
-│       └── requirements.txt
+│   ├── config.py                # paths, env, modelos, parametros
+│   ├── chain/
+│   │   ├── builder.py           # chain LCEL + guardrails + structured output
+│   │   ├── memoria.py           # MemoriaTokenBuffer por session_id
+│   │   └── multi_provider.py    # bonus: matriz modelo x prompt
+│   ├── schemas/ev.py            # ConsultaRecarga, SessaoRecarga, RelatorioFaturamento
+│   ├── guardrails/
+│   │   ├── scope_validator.py   # escopo GoodWe + dominios restritos
+│   │   └── moderation.py        # jailbreak e prompt injection (entrada e saida)
+│   ├── legado/chatbot_legado.py # versao Sprint 2 congelada, para o comparativo
+│   └── backend/main.py          # CLI
+├── evals/
+│   ├── eval_set.json            # 19 casos
+│   ├── run_eval.py              # roda o eval contra lcel ou legado
+│   ├── comparar.py              # gera a tabela antes/depois
+│   ├── medir_prompts.py         # tokens por versao de prompt
+│   └── sprint3_results.json     # resultados (gerado)
+├── docs/
+│   ├── relatorio_evolucao.md    # fonte do relatorio
+│   ├── relatorio_evolucao.pdf   # entregavel (gerado)
+│   ├── gerar_relatorio_pdf.py
+│   └── relatorio_modelos.md     # modelos e parametros
+├── requirements.txt
+├── .env.example
 └── entrega_sprint.txt
-\`\`\`
+```
 
 ---
 
-## Pré-requisitos
+## Instalacao
 
-1. **Python 3.11+** instalado
-2. **API Key do Ollama Cloud** — obtenha em https://ollama.com
+**Pre-requisito:** Python 3.11+ e uma chave do Ollama Cloud.
 
----
+```bash
+git clone https://github.com/SEU_USUARIO/chargegrid-ai.git
+cd chargegrid-ai
 
-## Configuração do Ambiente
-
-### 1. Clonar o repositório
-\`\`\`bash
-git clone https://github.com/Enz0Silva/1CCR-Sprint-Prompt-and-Arfictial-Intelligent-01.git
-cd 1CCR-Sprint-Prompt-and-Arfictial-Intelligent-01
-\`\`\`
-
-### 2. Criar o arquivo .env
-\`\`\`bash
-cp .env.example .env
-\`\`\`
-
-Conteúdo do `.env`:
-\`\`\`
-OLLAMA_API_KEY=sua_chave_aqui
-OLLAMA_MODEL=gpt-oss:120b
-\`\`\`
-
-O arquivo `.env` está no `.gitignore` e nunca deve ser commitado.
-
-### 3. Criar ambiente virtual e instalar dependências
-\`\`\`bash
 python -m venv .venv
-.venv\Scripts\python.exe -m pip install ollama python-dotenv
-\`\`\`
+.venv\Scripts\python.exe -m pip install -r requirements.txt     # Windows
+# source .venv/bin/activate && pip install -r requirements.txt  # Linux/Mac
+
+copy .env.example .env      # Windows   (cp no Linux)
+```
+
+Abra o `.env` e preencha `OLLAMA_API_KEY`. O arquivo esta no `.gitignore`.
+
+### No PyCharm
+
+1. **Settings > Project > Python Interpreter** -> `.venv\Scripts\python.exe`
+2. **Edit Configurations** -> *Working directory* = **raiz do projeto**
+   (nao `src/backend/` — os imports sao a partir da raiz)
+3. Rode `src/backend/main.py` com **Shift+F10**
 
 ---
 
-## Como Rodar no PyCharm
+## Uso
 
-1. **Edit Configurations** → selecione o interpretador do `.venv`
-2. No campo **"Paths to .env files"**, aponte para o `.env` na raiz
-3. Abra `src/backend/main.py` e pressione **Shift+F10**
+```bash
+python src/backend/main.py
+```
 
-Pelo terminal:
-\`\`\`bash
-cd src/backend
-python main.py
-\`\`\`
+| Comando | Funcao |
+|---------|--------|
+| `/reset` | Limpa o historico da sessao atual |
+| `/status` | Modelo, prompt e ocupacao da memoria |
+| `/json <texto>` | Responde com saida estruturada validada |
+| `/prompt <v>` | Troca a versao do system prompt (v1, v2, v3) |
+| `/sessao <id>` | Troca de sessao (cada id tem memoria propria) |
+| `/ajuda` | Lista os comandos |
+| `/sair` | Encerra |
 
----
+### Exemplo de memoria em 3+ turnos
 
-## Comandos do CLI
-
-| Comando   | Função                              |
-|-----------|-------------------------------------|
-| `/reset`  | Limpa o histórico de conversa       |
-| `/status` | Exibe modelo e URL do Ollama        |
-| `/ajuda`  | Lista os comandos disponíveis       |
-| `/sair`   | Encerra o chatbot                   |
-
----
-
-## Memória de Contexto
-
-O chatbot mantém histórico completo da conversa em memória durante a sessão.
-Cada mensagem enviada ao Ollama inclui todas as trocas anteriores, permitindo
-diálogos contínuos e coerentes sem necessidade de repetir contexto.
-
-O histórico é resetado ao digitar `/reset` ou reiniciar o programa.
+```
+Operador > O carregador 3 parou no meio da sessao. O que houve?
+Operador > E quanto tempo leva para resolver?
+Operador > De qual carregador eu estava falando mesmo?      <- so responde com historico
+Operador > Abre um chamado para ele entao.
+```
 
 ---
 
-## Modelo de Teste e Resultados
+## Reproduzir as medicoes
 
-- Modelo de teste: `docs/modelo_de_teste.md` (7 casos, incluindo fora do escopo e jailbreak)
-- Resultados documentados: `docs/resultados_testes.md`
+Cada modulo roda sozinho para inspecao rapida:
 
-**Resumo: 6 de 7 casos com avaliação Adequada.**
+```bash
+python src/guardrails/moderation.py        # bateria de jailbreak (offline)
+python src/guardrails/scope_validator.py   # bateria de escopo (offline)
+python src/chain/memoria.py                # janela deslizante de tokens (offline)
+python src/chain/builder.py                # 4 turnos reais contra o modelo
+```
+
+### Eval e comparativo antes/depois
+
+```bash
+python evals/medir_prompts.py                              # tokens por versao
+python evals/run_eval.py --alvo legado --prompt v1 --tag sprint2
+python evals/run_eval.py --alvo lcel   --prompt v3 --tag sprint3
+python evals/comparar.py --antes sprint2 --depois sprint3
+```
+
+A ultima linha imprime a tabela obrigatoria do relatorio. Cole em
+`docs/relatorio_evolucao.md` e gere o PDF:
+
+```bash
+python docs/gerar_relatorio_pdf.py
+```
+
+### Bonus multi-provider
+
+```bash
+python src/chain/multi_provider.py --modelos gpt-oss:120b gpt-oss:20b --prompts v1 v3
+```
+
+2 modelos x 2 prompts x 5 perguntas, com latencia e tokens por celula.
 
 ---
 
-## Segurança
+## Seguranca
 
-- API Key carregada via variável de ambiente, nunca exposta no código
-- `.env` no `.gitignore` — nunca commitado no repositório
-- Modelo segue restrições rígidas: não inventa dados, recusa jailbreak, redireciona fora do escopo
+- Credenciais so via `.env` (gitignored). Nenhuma chave no codigo ou no historico.
+- **Guardrail de entrada** (`moderar_entrada`): jailbreak, troca de persona,
+  vazamento de prompt, injection embutida em log, autoridade alegada e acesso
+  indevido sao barrados **antes** da chamada ao modelo — sem resposta a vazar e
+  sem token gasto.
+- **Guardrail de escopo** (`validar_escopo`): separa dentro do escopo, fora do
+  escopo e dominio restrito. Juridico, financeiro e seguranca eletrica recebem
+  recusa que orienta profissional habilitado, nunca conselho.
+- **Guardrail de saida** (`moderar_saida`): ultima barreira contra vazamento do
+  system prompt e quebra de persona.
+- **Schema como guardrail**: `field_validator` rejeita codigo de erro fora da base
+  GoodWe e potencia acima do limite fisico da linha EV-C.
 
 ---
 
-*EV Challenge 2026 — FIAP x GoodWe | Sprint 2 — Desenvolvimento e Entrega*
+## Fora do escopo desta sprint
+
+LangGraph, agentes, RAG, function calling novo, interface web e observabilidade
+pertencem aos Modulos 3 e 4.
+
+---
+
+*EV Challenge 2026 — FIAP x GoodWe | Sprint 03 — Refactory conversacional em LangChain*
