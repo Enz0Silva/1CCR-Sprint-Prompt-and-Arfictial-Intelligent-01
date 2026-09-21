@@ -1,19 +1,40 @@
 EV Challenge 2026 — FIAP x GoodWe
-Sprint 2 — Desenvolvimento e Entrega do Chatbot GoodWe
-Turma: 1CCR | Semestre: 2026.1
+Sprint 03 — Refactory conversacional em LangChain
+Disciplina: Prompt and Artificial Intelligence
+Turma: 1CCR  |  Semestre: 2026.2
+Professor: Jorge Luiz Gomes
+Data de entrega: 21/09/2026
 
 ========================================
 INTEGRANTES
 ========================================
-Enzo Ricardo Silva           — RM571333
-Eric Hernandes Penhalbell    — RM570237
-Murilo Ignacio               — RM573621
-Matheus Borges               — RM574085
-Joao Guilherme Figueiredo    — RM572697
-Ryan Luther                  — RM572993
-
+Enzo Ricardo Silva           — RM571333 — Turma:1CCR
+Eric Hernandes Penhalbell    — RM570237 — Turma:1CCR 
+Matheus Borges               — RM574085 — Turma:1CCR 
+Joao Guilherme Figueiredo    — RM572697 — Turma:1CCR 
+Ryan Luther                  — RM572993 — Turma:1CCR 
 ========================================
 LINKS
 ========================================
 Repositorio GitHub : https://github.com/Enz0Silva/1CCR-Sprint-Prompt-and-Arfictial-Intelligent-01.git
-Video YouTube      : https://youtu.be/Qt0Y7GEMrPI
+Relatorio (PDF)    : docs/relatorio_evolucao.pdf
+
+========================================
+ENTREGAVEIS DA SPRINT 03
+========================================
+1. Chain LCEL end-to-end .............. src/chain/builder.py
+2. Memoria por sessao com limite ...... src/chain/memoria.py
+3. Structured output Pydantic v2 ...... src/schemas/ev.py
+4. Context engineering + tiktoken ..... prompts/ + evals/medir_prompts.py
+5. Seguranca e guardrails ............. src/guardrails/
+6. Relatorio de evolucao (PDF) ........ docs/relatorio_evolucao.pdf
+7. Prompt versionado + tabela ......... prompts/VERSOES.md
+8. Relatorio de modelos ............... docs/relatorio_modelos.md
+9. Eval reexecutado ................... evals/sprint3_results.json
+10. BONUS multi-provider .............. src/chain/multi_provider.py
+
+========================================
+OBSERVACAO
+========================================
+Nenhuma credencial consta no repositorio ou no historico do Git.
+A chave do Ollama Cloud e carregada via .env, que esta no .gitignore.
