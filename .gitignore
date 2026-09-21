@@ -1,1 +1,22 @@
+# Ambiente e credenciais
 .env
+.env.local
+*.key
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Saidas geradas (o resultado do eval E entregavel — nao ignorar)
+docs/matriz_modelos.json
+*.log
