@@ -312,26 +312,22 @@ sprint.
 
 ---
 
-## 5. Equipe e divisao de trabalho
+## 5. Equipe
 
-| Nome | RM | Tarefa principal |
-|------|-----|------------------|
-| Enzo Ricardo Silva | RM571333 | [preencher] |
-| Eric Hernandes Penhalbell | RM570237 | [preencher] |
-| Murilo Ignacio | RM573621 | [preencher] |
-| Matheus Borges | RM574085 | [preencher] |
-| Joao Guilherme Figueiredo | RM572697 | [preencher] |
-| Ryan Luther | RM572993 | [preencher] |
+| Nome | RM |
+|------|-----|
+| Enzo Ricardo Silva | RM571333 |
+| Eric Hernandes Penhalbell | RM570237 |
+| Matheus Borges | RM574085 |
+| Joao Guilherme Figueiredo | RM572697 |
+| Ryan Luther | RM572993 |
 
-> Sugestao de divisao coerente com a estrutura do repositorio — ajustem para o
-> que de fato aconteceu, e confiram se os commits de cada um batem com a linha:
->
-> - chain LCEL + memoria por sessao (`src/chain/`)
-> - schema Pydantic v2 + integracao na chain (`src/schemas/`)
-> - guardrails de escopo e moderacao (`src/guardrails/`)
-> - prompts versionados + medicao de tokens (`prompts/`, `evals/medir_prompts.py`)
-> - eval set, runner e comparativo (`evals/`)
-> - relatorio de modelos, multi-provider e este relatorio (`docs/`)
+**Nota sobre a execucao desta sprint.** O refactory da Sprint 03, incluindo a
+migracao para LangChain LCEL, a memoria por sessao, o schema Pydantic v2, os
+guardrails, o eval automatizado e a producao dos relatorios, foi executado
+integralmente pelo integrante Enzo Ricardo Silva (RM571333). Os demais
+integrantes permanecem no grupo mas nao participaram desta entrega especifica.
+Os commits do repositorio refletem essa autoria.
 
 ---
 

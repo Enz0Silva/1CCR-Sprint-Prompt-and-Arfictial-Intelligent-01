@@ -97,7 +97,7 @@ chargegrid-ai/
 **Pre-requisito:** Python 3.11+ e uma chave do Ollama Cloud.
 
 ```bash
-git clone https://github.com/SEU_USUARIO/chargegrid-ai.git
+git clone https://github.com/Eoz0Silva/chargegrid-ai.git
 cd chargegrid-ai
 
 python -m venv .venv

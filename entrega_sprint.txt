@@ -1,18 +1,20 @@
 EV Challenge 2026 — FIAP x GoodWe
 Sprint 03 — Refactory conversacional em LangChain
 Disciplina: Prompt and Artificial Intelligence
-Turma: 1CCR  |  Semestre: 2026.2
+Turma: 1CCR
+Semestre: 2026.2
 Professor: Jorge Luiz Gomes
 Data de entrega: 21/09/2026
 
 ========================================
 INTEGRANTES
 ========================================
-Enzo Ricardo Silva           — RM571333 — Turma:1CCR
-Eric Hernandes Penhalbell    — RM570237 — Turma:1CCR 
-Matheus Borges               — RM574085 — Turma:1CCR 
-Joao Guilherme Figueiredo    — RM572697 — Turma:1CCR 
-Ryan Luther                  — RM572993 — Turma:1CCR 
+Enzo Ricardo Silva           — RM571333 — 1CCR
+Eric Hernandes Penhalbell    — RM570237 — 1CCR
+Matheus Borges               — RM574085 — 1CCR
+Joao Guilherme Figueiredo    — RM572697 — 1CCR
+Ryan Luther                  — RM572993 — 1CCR
+
 ========================================
 LINKS
 ========================================
@@ -34,7 +36,31 @@ ENTREGAVEIS DA SPRINT 03
 10. BONUS multi-provider .............. src/chain/multi_provider.py
 
 ========================================
-OBSERVACAO
+RESULTADOS MEDIDOS (eval automatizado)
+========================================
+Nota no eval        : 8,71 (0-10)  |  Sprint 2 legado: 7,28
+Comportamento OK    : 95% dos 20 casos
+Structured output   : 100% de acuracia
+Latencia media      : 0,88s por caso
+Categorias em 1.00  : dominio_restrito, jailbreak, out_of_scope, memoria, edge_case
+Categoria com regressao intermitente: happy_path (0,83)
+
+========================================
+OBSERVACAO SOBRE INTEGRIDADE
 ========================================
 Nenhuma credencial consta no repositorio ou no historico do Git.
 A chave do Ollama Cloud e carregada via .env, que esta no .gitignore.
+Confirmado com: git log --all --full-history -- .env
+                git log -S "ea441d" --all --oneline
+
+========================================
+OBSERVACAO SOBRE A EXECUCAO
+========================================
+O refactory da Sprint 03 foi executado integralmente pelo integrante Enzo
+Ricardo Silva (RM571333) — migracao para LangChain LCEL, memoria por sessao,
+schema Pydantic v2, guardrails, eval automatizado e producao dos relatorios.
+
+Os demais integrantes listados acima permanecem no grupo mas nao participaram
+desta entrega especifica. O historico Git do repositorio reflete essa autoria.
+As decisoes tecnicas estao documentadas em docs/relatorio_evolucao.pdf, com
+secao dedicada de "Problemas encontrados e solucoes".
